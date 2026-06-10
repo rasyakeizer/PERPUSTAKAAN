@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 using namespace std;
 
 class Buku {
@@ -41,6 +42,21 @@ struct Node {
 
 Node* head = NULL;
 
+int inputAngka() {
+    int nilai;
+
+    if (!(cin >> nilai)) {
+        cout << "\nPilihan tidak valid!\n";
+
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        return -1;
+    }
+
+    cin.ignore();
+    return nilai;
+}
 
 void tambahPeminjam(Peminjam p) {
 
@@ -140,7 +156,6 @@ void hapusPeminjam(int idCari) {
         return;
     }
 
-    // Cari node
     while (bantu->next != NULL &&
            bantu->next->data.id != idCari) {
 
@@ -181,9 +196,10 @@ void pinjamBuku() {
     int jumlahPeminjam;
 
     cout << "\nJumlah peminjam : ";
-    cin >> jumlahPeminjam;
+    jumlahPeminjam = inputAngka();
 
-    cin.ignore();
+    if (jumlahPeminjam == -1)
+        return;
 
     for (int i = 0; i < jumlahPeminjam; i++) {
 
@@ -197,9 +213,10 @@ void pinjamBuku() {
         while (true) {
 
             cout << "Jumlah buku dipinjam : ";
-            cin >> p.jumlahPinjam;
+            p.jumlahPinjam = inputAngka();
 
-            cin.ignore();
+            if (p.jumlahPinjam == -1)
+                return;
 
             if (p.jumlahPinjam > jumlahBukuTersedia) {
 
@@ -222,9 +239,15 @@ void pinjamBuku() {
                  << j + 1
                  << " : ";
 
-            cin >> pilih;
+            pilih = inputAngka();
 
-            cin.ignore();
+            if (pilih == -1)
+                return;
+
+            if (pilih < 1 || pilih > jumlahBukuTersedia) {
+                cout << "\nPilihan tidak valid!\n";
+                return;
+            }
 
             p.bukuDipinjam[j] =
                 daftarBuku[pilih - 1].judul;
@@ -253,14 +276,17 @@ void kembalikanBuku() {
     int id;
 
     cout << "\nMasukkan ID peminjam : ";
-    cin >> id;
+    id = inputAngka();
+
+    if (id == -1)
+        return;
 
     hapusPeminjam(id);
 
     tampilPeminjam();
 }
 
-void clsScreen(){
+void clsScreen() {
     system("cls");
 }
 
@@ -275,9 +301,11 @@ int main() {
         cout << "2. Kembalikan Buku\n";
         cout << "3. Keluar\n";
         cout << "Pilih menu : ";
-        cin >> menu;
 
-        cin.ignore();
+        menu = inputAngka();
+
+        if (menu == -1)
+            continue;
 
         switch (menu) {
 
@@ -296,7 +324,7 @@ int main() {
             break;
 
         default:
-            cout << "\nMenu tidak tersedia.\n";
+            cout << "\nPilihan tidak valid!\n";
         }
 
     } while (menu != 3);
